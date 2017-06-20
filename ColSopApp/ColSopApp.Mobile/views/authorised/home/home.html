@@ -1,0 +1,15 @@
+﻿<ion-view view-title="Welcome">
+    <ion-content>
+
+        <div class="list" >
+
+            <a class="item item-thumbnail-left home-list" ng-repeat="item in items" ui-sref="authorised.item({itemId:{{item.id}}})">
+                <!--<img src="{{item.thumbnailUrl}}">-->
+                <pre-img ratio="" helper-class=""> <img ng-src="{{item.thumbnailUrl}}" spinner-on-load class="list-left-image"> </pre-img>
+                <h2>{{item.title}}</h2>
+                <p>Unlock your child’s imagination. Let them tell you a magical story today.</p>
+            </a>
+
+        </div>
+    </ion-content>
+</ion-view>

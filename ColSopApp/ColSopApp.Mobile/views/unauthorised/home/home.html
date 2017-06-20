@@ -1,0 +1,19 @@
+﻿<ion-view view-title="Login">
+    <ion-content padding="true" style="background: url(https://s3.amazonaws.com/ionic-io-static/FTt93tAyQtGDaiPl4p4C_29352876_m.jpg) no-repeat center;background-size:cover;">
+        <div ng-form name="loginForm">
+            <div class="list home-login-form">
+                <label class="item item-input">
+                    <span class="input-label">Username</span>
+                    <input type="text" ng-model="loginData.userName" required>
+                    <!--<p ng-show="loginForm.userName.$error.required && !loginForm.userName.$pristine" class="login-validation-message">This field is required.</p>-->
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input type="password" ng-model="loginData.password" required>
+                </label>
+            </div>
+            <button class="button button-block button-assertive" type="submit" ng-click="doLogin()" ng-disabled="loginForm.$invalid">Log in</button>
+            <p class="login-error-message" ng-show="loginError" ng-bind="loginErrorMessage"></p>
+        </div>
+    </ion-content>
+</ion-view>

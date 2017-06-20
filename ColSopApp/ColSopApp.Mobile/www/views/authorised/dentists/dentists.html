@@ -1,0 +1,21 @@
+<ion-view view-title="Dentists">
+    <ion-content >
+        <!-- Refresh to get the new posts -->
+        <ion-refresher pulling-text="Pull to refresh..." on-refresh="getNewData()"> </ion-refresher>
+        <div class="list list-inset">
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="text" placeholder="Search" ng-model="search.name">
+            </label>
+        </div>
+        <div class="list">
+            <a class="item item-thumbnail-left dentist-list" ng-repeat="user in users| filter:search" ui-sref="authorised.dentistDetails({dentistId:{{user.id}}})">
+                <!--<img src="{{user.profilePhoto}}">-->
+                <pre-img ratio="" helper-class=""> <img ng-src="{{user.profilePhoto}}" spinner-on-load class="list-left-image"> </pre-img>
+                <h2>{{user.name}}</h2>
+                <p>{{user.email}}</p>
+                <p>{{user.phone}}</p>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

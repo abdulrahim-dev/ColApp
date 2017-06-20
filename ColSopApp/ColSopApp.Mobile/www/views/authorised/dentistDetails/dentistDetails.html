@@ -1,0 +1,36 @@
+
+<ion-view view-title="{{user[0].name}}">
+    <ion-nav-title> <span>{{user[0].name}}</span> </ion-nav-title>
+    <ion-content has-header="true">
+        <div class="list card">
+
+            <div class="item dentist-details-page">
+                <!--<img src="http://www.illusioimaging.com/app/uploads/2014/07/doctor-image.original.png">-->
+                <pre-img ratio="" helper-class=""> <img src="http://www.illusioimaging.com/app/uploads/2014/07/doctor-image.original.png" spinner-on-load class="full-image item-detaiils-image"> </pre-img>
+                <h2>{{user[0].name}}</h2>
+                <p>{{user[0].email}}</p>
+                <p>{{user[0].phone}}</p>
+            </div>
+
+
+            <ion-list class="manual-list-fullwidth disable-user-behavior">
+                <div class="list">
+                    <ion-item class="item-divider item"> Website</ion-item>
+                    <ion-item class="item">{{user[0].website}}</ion-item>
+
+                    <ion-item class="item-divider item"> Clinic Details</ion-item>
+                    <ion-item class="item">Name : {{user[0].company.name}}</ion-item>
+                    <ion-item class="item">Street : {{user[0].address.street}}</ion-item>
+                    <ion-item class="item">Suite : {{user[0].address.suite}}</ion-item>
+                    <ion-item class="item">City : {{user[0].address.city}}</ion-item>
+                    <ion-item class="item">Zipcode : {{user[0].address.zipcode}}</ion-item>
+
+                    <ion-item class="item-divider item">Location</ion-item>
+                    <div id="map" data-tap-disabled="true" style="height: 350px; width: 100%"></div>
+                </div>
+            </ion-list>
+
+
+        </div>
+    </ion-content>
+</ion-view>

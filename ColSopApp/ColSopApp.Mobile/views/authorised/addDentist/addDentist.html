@@ -1,0 +1,61 @@
+﻿<ion-view>
+    <ion-nav-title> <span>Add Dentist</span> </ion-nav-title>
+    <ion-content class="add-dentist">
+        <div class="list">
+            <div>
+                <img src="https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg" ng-src="{{profilePicture}}" class="profile-pic" ng-click="showImages($index)">
+            </div>
+            <div>
+                <div class="button-bar">
+                    <button class="button button-light button-block icon ion-ios-camera" ng-click="takePhoto_Camera()"></button>
+                    <button class="button button-light button-block icon ion-images" ng-click="selectPhoto_Gallery()"></button>
+                </div>
+            </div>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">First Name</span>
+                <input type="text" placeholder="First Name">
+            </label>
+
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Last Name</span>
+                <input type="text" placeholder="Last Name">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Email</span>
+                <input type="email" placeholder="Email">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Phone Number</span>
+                <input type="text" placeholder="Phone Number">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Address Line 1</span>
+                <input type="text" placeholder="Address Line 1">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Address Line 2</span>
+                <input type="text" placeholder="Address Line 2">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Address Line 3</span>
+                <input type="text" placeholder="Address Line 3">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Pin Code</span>
+                <input type="text" placeholder="Pin Code">
+            </label>
+
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Comments</span>
+                <textarea placeholder="Comments" style="height: 123px;"></textarea>
+            </label>
+
+            <ion-item class="item-divider item">Location</ion-item>
+            <div class="creator-container">
+                <div id="map" data-tap-disabled="true" style="height: 350px; width: 100%"></div>
+            </div>
+
+        </div>
+
+    </ion-content>
+</ion-view>

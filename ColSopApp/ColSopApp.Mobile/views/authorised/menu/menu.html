@@ -1,0 +1,40 @@
+﻿
+<ion-side-menus enable-menu-with-back-views="false" >
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-assertive">
+            <ion-nav-back-button class="button-icon icon ion-chevron-left">
+            </ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="innerMenuContent"></ion-nav-view>
+
+
+    </ion-side-menu-content>
+    <ion-side-menu side="left">
+        <ion-content class="side-menu-inner">
+            <ion-list  class="home-side-menu">
+                <ion-item menu-close ui-sref="authorised.itemlists" active-page-highlight class="side-menu-inner-item">
+                    Products
+                </ion-item>
+                <ion-item menu-close ui-sref="authorised.dentists" active-page-highlight class="side-menu-inner-item">
+                    Dentists
+                </ion-item>
+
+                <ion-item menu-close ui-sref="authorised.addDentist" active-page-highlight class="side-menu-inner-item">
+                    Add Dentist
+                </ion-item>
+
+                <ion-item menu-close  ng-click="logout()" class="side-menu-inner-item">
+                   Logout
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>
+
+
+
+
+
