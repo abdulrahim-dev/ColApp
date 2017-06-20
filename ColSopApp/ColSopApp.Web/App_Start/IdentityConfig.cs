@@ -18,6 +18,14 @@ namespace ColSopApp.Web
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
+            // Allows cors for the /token endpoint this is different from webapi endpoints. 
+            // We have added enable cors method in WebApiConfig.cs for other requests
+            //*****************************************Added  BY Abdul
+            //*******************Access-Control-Allow-Origin
+            if (context.Request.Method != "OPTIONS" && context.Request.Path.Value == "/token")
+            {
+                context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });// <-- This is the line you need
+            }
             var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
