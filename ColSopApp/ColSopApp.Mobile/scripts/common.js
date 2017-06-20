@@ -5,8 +5,9 @@ services.factory('$config', function () {
         /* App Version */
         version: '1.0.0',
         isApp: options.isApp,
-        serviceURL: 'http://25.0.0.4:8026/api/',
-        host: 'http://25.0.0.4:8026/',
+        serviceURL: options.debug ? 'http://rahimka91-001-site1.itempurl.com/api/' : 'http://25.0.0.4:8026/api/',
+        host: options.debug ? 'http://rahimka91-001-site1.itempurl.com/' : 'http://25.0.0.4:8026/',
+
         /* Debugging and Logging */
         debug: options.debug,
         log: function () {

@@ -26,9 +26,10 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             //    cordova.plugins.Keyboard.disableScroll(true);
 
             //}
-            //if (window.StatusBar) {
-            //    // org.apache.cordova.statusbar required
-            //    StatusBar.styleDefault();
+         
+            //if (cordova.platformId === 'android') {
+            //    //StatusBar.hide();
+            //    StatusBar.backgroundColorByHexString("#ed1de3");
             //}
         });
     }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider) {

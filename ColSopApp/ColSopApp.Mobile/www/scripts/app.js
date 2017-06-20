@@ -26,9 +26,10 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             //    cordova.plugins.Keyboard.disableScroll(true);
 
             //}
-            //if (window.StatusBar) {
-            //    // org.apache.cordova.statusbar required
-            //    StatusBar.styleDefault();
+         
+            //if (cordova.platformId === 'android') {
+            //    //StatusBar.hide();
+            //    StatusBar.backgroundColorByHexString("#ed1de3");
             //}
         });
     }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider) {
@@ -140,8 +141,9 @@ services.factory('$config', function () {
         /* App Version */
         version: '1.0.0',
         isApp: options.isApp,
-        serviceURL: 'http://25.0.0.4:8026/api/',
-        host: 'http://25.0.0.4:8026/',
+        serviceURL: options.debug ? 'http://rahimka91-001-site1.itempurl.com/api/' : 'http://25.0.0.4:8026/api/',
+        host: options.debug ? 'http://rahimka91-001-site1.itempurl.com/' : 'http://25.0.0.4:8026/',
+
         /* Debugging and Logging */
         debug: options.debug,
         log: function () {
@@ -582,28 +584,6 @@ services.factory('$authorisedDentistService', function ($q, $config, $auth, $htt
     }
     return returnObj;
 });
-controllers.controller('authorisedItemlistsController', function ($scope, $authorisedlistingService) {
-    $authorisedlistingService.getList().then(function (response) {
-        $scope.items = response;
-    }, function (error) {
-        console.log(error);
-    });
-});
-services.factory('$authorisedlistingService', function ($q, $config, $auth, $http) {
-    var returnObj = {};
-    returnObj.getList = function () {
-        var deferred = $q.defer();
-        $http.get("https://jsonplaceholder.typicode.com/photos?albumId=1")
-             .success(function (response) {
-                     deferred.resolve(response);
-             }, function (errorMessage) {
-                 deferred.reject(errorMessage);
-             });
-
-        return deferred.promise;
-    }
-    return returnObj;
-});
 controllers.controller('authoriseditemController', function ($scope, $authoriseditemService, $stateParams) {
     $authoriseditemService.getItem($stateParams.itemId).then(function (response) {
         $scope.item = response;
@@ -710,21 +690,21 @@ controllers.controller('unauthorisedHomeController', function ($scope, $state, l
      * 
      */
     $scope.doLogin = function () {
-        $state.go('authorised.itemlists');
-        //loginService.login($scope.loginData).then(function (response) {
-        //    if (response.access_token !== "" && response.access_token !== undefined && response.access_token !== null) {
-        //        $state.go('authorised.itemlists');
-        //    } else {
-        //        $scope.loginError = true;
-        //        $scope.loginErrorMessage = "Username orPassword is invalid. Please try again.";
-        //        $timeout(function() {
-        //            $scope.loginError = false;
-        //            $scope.loginErrorMessage = "";
-        //        }, 1000);
-        //    }
-        //}, function (error) {
-        //    console.log(error);
-        //});
+        //$state.go('authorised.itemlists');
+        loginService.login($scope.loginData).then(function (response) {
+            if (response.access_token !== "" && response.access_token !== undefined && response.access_token !== null) {
+                $state.go('authorised.itemlists');
+            } else {
+                $scope.loginError = true;
+                $scope.loginErrorMessage = "Username orPassword is invalid. Please try again.";
+                $timeout(function() {
+                    $scope.loginError = false;
+                    $scope.loginErrorMessage = "";
+                }, 1000);
+            }
+        }, function (error) {
+            console.log(error);
+        });
         
     };
 
@@ -742,6 +722,28 @@ services.factory('loginService', function ($q, $config, $auth, $http) {
                      deferred.reject('Unable to Login. Please try again.');
                  }
 
+             }, function (errorMessage) {
+                 deferred.reject(errorMessage);
+             });
+
+        return deferred.promise;
+    }
+    return returnObj;
+});
+controllers.controller('authorisedItemlistsController', function ($scope, $authorisedlistingService) {
+    $authorisedlistingService.getList().then(function (response) {
+        $scope.items = response;
+    }, function (error) {
+        console.log(error);
+    });
+});
+services.factory('$authorisedlistingService', function ($q, $config, $auth, $http) {
+    var returnObj = {};
+    returnObj.getList = function () {
+        var deferred = $q.defer();
+        $http.get("https://jsonplaceholder.typicode.com/photos?albumId=1")
+             .success(function (response) {
+                     deferred.resolve(response);
              }, function (errorMessage) {
                  deferred.reject(errorMessage);
              });

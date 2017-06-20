@@ -20,21 +20,21 @@
      * 
      */
     $scope.doLogin = function () {
-        $state.go('authorised.itemlists');
-        //loginService.login($scope.loginData).then(function (response) {
-        //    if (response.access_token !== "" && response.access_token !== undefined && response.access_token !== null) {
-        //        $state.go('authorised.itemlists');
-        //    } else {
-        //        $scope.loginError = true;
-        //        $scope.loginErrorMessage = "Username orPassword is invalid. Please try again.";
-        //        $timeout(function() {
-        //            $scope.loginError = false;
-        //            $scope.loginErrorMessage = "";
-        //        }, 1000);
-        //    }
-        //}, function (error) {
-        //    console.log(error);
-        //});
+        //$state.go('authorised.itemlists');
+        loginService.login($scope.loginData).then(function (response) {
+            if (response.access_token !== "" && response.access_token !== undefined && response.access_token !== null) {
+                $state.go('authorised.itemlists');
+            } else {
+                $scope.loginError = true;
+                $scope.loginErrorMessage = "Username orPassword is invalid. Please try again.";
+                $timeout(function() {
+                    $scope.loginError = false;
+                    $scope.loginErrorMessage = "";
+                }, 1000);
+            }
+        }, function (error) {
+            console.log(error);
+        });
         
     };
 
