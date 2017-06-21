@@ -44,6 +44,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.6.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.6.0\lib\net45\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.2\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autofac.Integration.WebApi, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.WebApi2.4.0.1\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AutoMapper, Version=6.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.1.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -293,6 +309,28 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ColSopApp.Core\ColSopApp.Core.csproj">
+      <Project>{b85f04ae-d71f-4da8-bd2e-77421161cf2c}</Project>
+      <Name>ColSopApp.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ColSopApp.Data\ColSopApp.Data.csproj">
+      <Project>{d0a1f72c-abeb-405f-812f-686ded05dd1e}</Project>
+      <Name>ColSopApp.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ColSopApp.Dto\ColSopApp.Dto.csproj">
+      <Project>{af8672a3-a551-44eb-bbe6-e22cf41f703f}</Project>
+      <Name>ColSopApp.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ColSopApp.Logging\ColSopApp.Logging.csproj">
+      <Project>{5db111b6-958b-4a38-9087-1edd94806f0c}</Project>
+      <Name>ColSopApp.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ColSopApp.Services\ColSopApp.Services.csproj">
+      <Project>{28a5bbdf-2608-40b9-bef2-4840924aee74}</Project>
+      <Name>ColSopApp.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
