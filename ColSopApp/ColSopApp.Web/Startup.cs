@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using ColSopApp.Web.DI_Capsule;
+using ColSopApp.Web.Mapping;
 using Microsoft.Owin;
 using Owin;
 
@@ -17,7 +18,14 @@ namespace ColSopApp.Web
     {
         public void Configuration(IAppBuilder app)
         {
+            //https://code.msdn.microsoft.com/windowsdesktop/Architecture-real-world-8ac333a2/sourcecode?fileId=141308&pathId=366130227
+            //Code sample
+
             ConfigureAuth(app);
+
+            //Mapping
+            var mappingDefinitions = new MappingDefinitions();
+            mappingDefinitions.Initialise();
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
