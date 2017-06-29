@@ -4,7 +4,7 @@ var directives = angular.module('Co-App-Directives', []);
 
 var options = {
     baseURL: '',
-    debug: true,
+    debug: false,
     isApp: false
 };
 
@@ -37,7 +37,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             .state('unauthorised', {
                 url: '/app',
                 abstract: true,
-                cache: false,
+                //cache: false,
                 templateUrl: 'views/unauthorised/menu/menu.html',
                 controller: 'unauthorisedController',
                 onEnter: function ($state, $auth) {
@@ -48,7 +48,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
                 }
             }).state('unauthorised.home', {
                 url: '/home',
-                cache: false,
+                //cache: false,
                 views: {
                     'menuContent': {
                         templateUrl: 'views/unauthorised/home/home.html',
@@ -58,7 +58,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             }).state('authorised', {
                 url: '/app',
                 abstract: true,
-                cache: false,
+                //cache: false,
                 templateUrl: 'views/authorised/menu/menu.html',
                 controller: 'authorisedController',
                 onEnter: function ($state, $auth) {
@@ -69,7 +69,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
                 }
             }).state('authorised.itemlists', {
                 url: '/itemlists',
-                cache: false,
+                //cache: false,
                 views: {
                     'innerMenuContent': {
                         templateUrl: 'views/authorised/home/home.html',
@@ -79,7 +79,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
                
             }).state('authorised.item', {
                 url: '/item/:itemId',
-                cache: false,
+                //cache: false,
                 views: {
                     'innerMenuContent': {
                         templateUrl: 'views/authorised/item/item.html',
@@ -89,7 +89,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
 
             }).state('authorised.dentists', {
                 url: '/dentists',
-                cache: false,
+                //cache: false,
                 views: {
                     'innerMenuContent': {
                         templateUrl: 'views/authorised/dentists/dentists.html',
@@ -99,7 +99,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
 
             }).state('authorised.dentistDetails', {
                 url: '/dentistdetails/:dentistId',
-                cache: false,
+                //cache: false,
                 views: {
                     'innerMenuContent': {
                         templateUrl: 'views/authorised/dentistDetails/dentistDetails.html',
@@ -109,7 +109,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
 
             }).state('authorised.addDentist', {
                 url: '/adddentist',
-                cache: false,
+                //cache: false,
                 views: {
                     'innerMenuContent': {
                         templateUrl: 'views/authorised/addDentist/addDentist.html',
@@ -584,6 +584,28 @@ services.factory('$authorisedDentistService', function ($q, $config, $auth, $htt
     }
     return returnObj;
 });
+controllers.controller('authorisedItemlistsController', function ($scope, $authorisedlistingService) {
+    $authorisedlistingService.getList().then(function (response) {
+        $scope.items = response;
+    }, function (error) {
+        console.log(error);
+    });
+});
+services.factory('$authorisedlistingService', function ($q, $config, $auth, $http) {
+    var returnObj = {};
+    returnObj.getList = function () {
+        var deferred = $q.defer();
+        $http.get("https://jsonplaceholder.typicode.com/photos?albumId=1")
+             .success(function (response) {
+                     deferred.resolve(response);
+             }, function (errorMessage) {
+                 deferred.reject(errorMessage);
+             });
+
+        return deferred.promise;
+    }
+    return returnObj;
+});
 controllers.controller('authoriseditemController', function ($scope, $authoriseditemService, $stateParams) {
     $authoriseditemService.getItem($stateParams.itemId).then(function (response) {
         $scope.item = response;
@@ -673,8 +695,8 @@ controllers.controller('unauthorisedHomeController', function ($scope, $state, l
     $scope.loginErrorMessage = "";
     $scope.loginData = {};
 
-    $scope.loginData.userName = "rahim@test.com";
-    $scope.loginData.password = "Pass@123";
+    $scope.loginData.userName = "test@test.com";
+    $scope.loginData.password = "Admin@123";
     
     // reset login status
     $auth.reset();
@@ -722,28 +744,6 @@ services.factory('loginService', function ($q, $config, $auth, $http) {
                      deferred.reject('Unable to Login. Please try again.');
                  }
 
-             }, function (errorMessage) {
-                 deferred.reject(errorMessage);
-             });
-
-        return deferred.promise;
-    }
-    return returnObj;
-});
-controllers.controller('authorisedItemlistsController', function ($scope, $authorisedlistingService) {
-    $authorisedlistingService.getList().then(function (response) {
-        $scope.items = response;
-    }, function (error) {
-        console.log(error);
-    });
-});
-services.factory('$authorisedlistingService', function ($q, $config, $auth, $http) {
-    var returnObj = {};
-    returnObj.getList = function () {
-        var deferred = $q.defer();
-        $http.get("https://jsonplaceholder.typicode.com/photos?albumId=1")
-             .success(function (response) {
-                     deferred.resolve(response);
              }, function (errorMessage) {
                  deferred.reject(errorMessage);
              });

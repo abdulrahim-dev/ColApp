@@ -3,8 +3,8 @@
     $scope.loginErrorMessage = "";
     $scope.loginData = {};
 
-    $scope.loginData.userName = "rahim@test.com";
-    $scope.loginData.password = "Pass@123";
+    $scope.loginData.userName = "test@test.com";
+    $scope.loginData.password = "Admin@123";
     
     // reset login status
     $auth.reset();

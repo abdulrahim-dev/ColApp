@@ -19,13 +19,14 @@ namespace ColSopApp.Web
             var corsAttr = new EnableCorsAttribute("*", "*", "*");
             config.EnableCors(corsAttr);
 
-            // Web API configuration and services
-            // Configure Web API to use only bearer token authentication.
-            config.SuppressDefaultHostAuthentication();
-            config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
+            //// Web API configuration and services
+            //// Configure Web API to use only bearer token authentication.
+            //config.SuppressDefaultHostAuthentication();
+            //config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
-            // Web API routes
-            config.MapHttpAttributeRoutes();
+            //// Web API routes
+            //config.MapHttpAttributeRoutes();
+            config.EnsureInitialized();
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

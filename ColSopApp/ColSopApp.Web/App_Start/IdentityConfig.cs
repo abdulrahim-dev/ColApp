@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using ColSopApp.Core.Entities;
+using ColSopApp.Data;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -26,7 +28,7 @@ namespace ColSopApp.Web
             {
                 context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });// <-- This is the line you need
             }
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ColAppDbContext>()));
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {

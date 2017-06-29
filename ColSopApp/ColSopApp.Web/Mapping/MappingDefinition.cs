@@ -26,8 +26,8 @@ namespace ColSopApp.Web.Mapping
 
             foreach (var entity in dataEntities)
             {
-                if (Mapper.Configuration.GetAllTypeMaps().FirstOrDefault(m => m.DestinationType == entity || m.SourceType == entity) == null)
-                {
+                //if (Mapper.Configuration.GetAllTypeMaps().FirstOrDefault(m => m.DestinationType == entity || m.SourceType == entity) == null)
+                //{
                     var matchingDto =
                         dtos.FirstOrDefault(x => x.Name.Replace("Dto", string.Empty).Equals(entity.Name, StringComparison.InvariantCultureIgnoreCase));
 
@@ -40,7 +40,7 @@ namespace ColSopApp.Web.Mapping
                             cfg.CreateMap(matchingDto, entity);
                         });
                     }
-                }
+               // }
             }
 
         }

@@ -27,6 +27,7 @@ namespace ColSopApp.Web
             var mappingDefinitions = new MappingDefinitions();
             mappingDefinitions.Initialise();
 
+
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
