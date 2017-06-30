@@ -4,7 +4,7 @@ var directives = angular.module('Co-App-Directives', []);
 
 var options = {
     baseURL: '',
-    debug: true, // true for app build
+    debug: false, // true for app build
     isApp: true,  //// true for app build
     db:null
 };
@@ -49,7 +49,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             }
             
         });
-    }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider) {
+    }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider, $httpProvider) {
         $stateProvider
             .state('unauthorised', {
                 url: '/app',
@@ -58,10 +58,10 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
                 templateUrl: 'views/unauthorised/menu/menu.html',
                 controller: 'unauthorisedController',
                 onEnter: function ($state, $auth) {
-                    //if ($auth.hasAccess()) {
-                    //    $state.go('authorised.itemlists');
+                    if ($auth.hasAccess()) {
+                        $state.go('authorised.itemlists');
 
-                    //}
+                    }
                 }
             }).state('unauthorised.home', {
                 url: '/home',
@@ -79,10 +79,10 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
                 templateUrl: 'views/authorised/menu/menu.html',
                 controller: 'authorisedController',
                 onEnter: function ($state, $auth) {
-                    //if (!$auth.hasAccess()) {
-                    //    $state.go('unauthorised.home');
+                    if (!$auth.hasAccess()) {
+                        $state.go('unauthorised.home');
 
-                    //}
+                    }
                 }
             }).state('authorised.itemlists', {
                 url: '/itemlists',
@@ -150,6 +150,8 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
         //Remove back button from all headers
         $ionicConfigProvider.platform.ios.navBar.alignTitle('left');
         $ionicConfigProvider.backButton.text('').icon('ion-chevron-left').previousTitleText(false);
+        
+        $httpProvider.interceptors.push('authInterceptorService');
     });
 
 /* Setup the Config from the default Options */
@@ -371,19 +373,74 @@ services.service('$auth', ['$storage', '$q', '$config',
     }
 ]);
 
+services.factory('authInterceptorService', ['$q', '$injector', '$auth', function ($q, $injector, $auth) {
 
+    var authInterceptorServiceFactory = {};
+
+    var _request = function (config) {
+        
+        config.headers = config.headers || {};
+
+        var authData = $auth.get();;
+        if (authData) {
+            config.headers.Authorization = 'Bearer ' + authData.access_token;
+        }
+
+        return config;
+    }
+
+    
+    authInterceptorServiceFactory.request = _request;
+
+    return authInterceptorServiceFactory;
+}]);
 /*
  * 
  * 
  */
-controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup) {
+controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup, $authorisedDentistProfileService) {
 
+    $scope.dentistData = {};
+    //$scope.dentistData.FirstName = "Abdul";
+    //$scope.dentistData.LastName = "";
+    //$scope.dentistData.Email = "";
+    //$scope.dentistData.Telephone = "";
+    //$scope.dentistData.MobilePhone = "";
+    //$scope.dentistData.AddressLineOne = "";
+    //$scope.dentistData.AddressLineTwo = "";
+    //$scope.dentistData.AddressLineThree = "";
+    //$scope.dentistData.Pincode = "";
+    //$scope.dentistData.Comments = "";
+    //$scope.dentistData.Latitude = "";
+    //$scope.dentistData.Longtitude = "";
+    //$scope.dentistData.ImagePath = "";
+    //$scope.dentistData.ApplicationUserId = 0;
+    $scope.saveDentist = function () {
+        var dentistProfileDto = {};
+        dentistProfileDto.FirstName = $scope.dentistData.FirstName;
+        dentistProfileDto.LastName = $scope.dentistData.LastName;
+        dentistProfileDto.Email = $scope.dentistData.Email;
+        dentistProfileDto.Telephone = $scope.dentistData.Telephone;
+        dentistProfileDto.MobilePhone = $scope.dentistData.MobilePhone;
+        dentistProfileDto.AddressLineOne = $scope.dentistData.AddressLineOne;
+        dentistProfileDto.AddressLineTwo = $scope.dentistData.AddressLineTwo;
+        dentistProfileDto.AddressLineThree = $scope.dentistData.AddressLineThree;
+        dentistProfileDto.Pincode = $scope.dentistData.Pincode;
+        dentistProfileDto.Comments = $scope.dentistData.Comments;
+        dentistProfileDto.Latitude = $scope.dentistData.Latitude;
+        dentistProfileDto.Longtitude = $scope.dentistData.Longtitude;
+        dentistProfileDto.ImagePath = $scope.dentistData.ImagePath;
+        dentistProfileDto.ApplicationUserId = 0;
 
-    $scope.saveDentist = function() {
-        $ionicPopup.alert({
-            title: 'Success!',
-            template: 'Saved successfully'
+        $authorisedDentistProfileService.addDentist(dentistProfileDto).then(function (response) {
+            $ionicPopup.alert({
+                title: 'Success!',
+                template: 'Saved successfully'
+            });
+        }, function (error) {
+            console.log(error);
         });
+        
     };
     
     var mapoptions = { timeout: 10000, enableHighAccuracy: true };
@@ -512,12 +569,88 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
     };
     //-----------------Methods for Image Zooming
 });
+services.factory('$authorisedDentistProfileService', function ($q, $config, $auth, $http) {
+    var returnObj = {};
+    returnObj.addDentist = function (dentistProfileDto) {
+        var deferred = $q.defer();
 
+        $http.post($config.serviceURL + 'DentistProfile/PostDentistProfile', dentistProfileDto)
+            .then(function (result) {
+                deferred.resolve(result);
+            },
+                    function (response) {
+                        deferred.reject(response);
+                    });
+
+        return deferred.promise;
+    }
+    return returnObj;
+});
 controllers.controller('authorisedCameraController', function ($scope, $cordovaGeolocation) {
 
     
 });
 
+controllers.controller('authorisedDentistDetailsController', function ($scope, $authorisedDentistDetailsService, $stateParams) {
+    $authorisedDentistDetailsService.getItem($stateParams.dentistId).then(function (response) {
+        $scope.user = response;
+
+        //---Google map
+        var latLng = new google.maps.LatLng($scope.user[0].address.geo.lat, $scope.user[0].address.geo.lng);
+
+        var mapOptions = {
+            center: latLng,
+            zoom: 2,
+            mapTypeId: google.maps.MapTypeId.City
+        };
+
+        $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        var marker = new google.maps.Marker({
+            position: latLng,
+            map: $scope.map
+        });
+
+    }, function (error) {
+        console.log(error);
+    });
+});
+services.factory('$authorisedDentistDetailsService', function ($q, $config, $auth, $http) {
+    var returnObj = {};
+    returnObj.getItem = function (userid) {
+        var deferred = $q.defer();
+        $http.get("https://jsonplaceholder.typicode.com/users?id=" + userid)
+             .success(function (response) {
+                     deferred.resolve(response);
+             }, function (errorMessage) {
+                 deferred.reject(errorMessage);
+             });
+
+        return deferred.promise;
+    }
+    return returnObj;
+});
+controllers.controller('authorisedItemlistsController', function ($scope, $authorisedlistingService) {
+    $authorisedlistingService.getList().then(function (response) {
+        $scope.items = response;
+    }, function (error) {
+        console.log(error);
+    });
+});
+services.factory('$authorisedlistingService', function ($q, $config, $auth, $http) {
+    var returnObj = {};
+    returnObj.getList = function () {
+        var deferred = $q.defer();
+        $http.get("https://jsonplaceholder.typicode.com/photos?albumId=1")
+             .success(function (response) {
+                     deferred.resolve(response);
+             }, function (errorMessage) {
+                 deferred.reject(errorMessage);
+             });
+
+        return deferred.promise;
+    }
+    return returnObj;
+});
 controllers.controller('authorisedDentistsController', function ($scope, $authorisedDentistService, $cordovaSQLite, $cordovaNetwork) {
     $scope.$on('$ionicView.enter', function () {
 
@@ -587,88 +720,6 @@ services.factory('$authorisedDentistService', function ($q, $config, $auth, $htt
         $http.get("https://jsonplaceholder.typicode.com/users")
              .success(function (response) {
                  deferred.resolve(response);
-             }, function (errorMessage) {
-                 deferred.reject(errorMessage);
-             });
-
-        return deferred.promise;
-    }
-    return returnObj;
-});
-controllers.controller('authorisedDentistDetailsController', function ($scope, $authorisedDentistDetailsService, $stateParams) {
-    $authorisedDentistDetailsService.getItem($stateParams.dentistId).then(function (response) {
-        $scope.user = response;
-
-        //---Google map
-        var latLng = new google.maps.LatLng($scope.user[0].address.geo.lat, $scope.user[0].address.geo.lng);
-
-        var mapOptions = {
-            center: latLng,
-            zoom: 2,
-            mapTypeId: google.maps.MapTypeId.City
-        };
-
-        $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-        var marker = new google.maps.Marker({
-            position: latLng,
-            map: $scope.map
-        });
-
-    }, function (error) {
-        console.log(error);
-    });
-});
-services.factory('$authorisedDentistDetailsService', function ($q, $config, $auth, $http) {
-    var returnObj = {};
-    returnObj.getItem = function (userid) {
-        var deferred = $q.defer();
-        $http.get("https://jsonplaceholder.typicode.com/users?id=" + userid)
-             .success(function (response) {
-                     deferred.resolve(response);
-             }, function (errorMessage) {
-                 deferred.reject(errorMessage);
-             });
-
-        return deferred.promise;
-    }
-    return returnObj;
-});
-controllers.controller('authorisedItemlistsController', function ($scope, $authorisedlistingService) {
-    $authorisedlistingService.getList().then(function (response) {
-        $scope.items = response;
-    }, function (error) {
-        console.log(error);
-    });
-});
-services.factory('$authorisedlistingService', function ($q, $config, $auth, $http) {
-    var returnObj = {};
-    returnObj.getList = function () {
-        var deferred = $q.defer();
-        $http.get("https://jsonplaceholder.typicode.com/photos?albumId=1")
-             .success(function (response) {
-                     deferred.resolve(response);
-             }, function (errorMessage) {
-                 deferred.reject(errorMessage);
-             });
-
-        return deferred.promise;
-    }
-    return returnObj;
-});
-controllers.controller('authoriseditemController', function ($scope, $authoriseditemService, $stateParams) {
-    $authoriseditemService.getItem($stateParams.itemId).then(function (response) {
-        $scope.item = response;
-    }, function (error) {
-        console.log(error);
-    });
-});
-services.factory('$authoriseditemService', function ($q, $config, $auth, $http) {
-    var returnObj = {};
-    returnObj.getItem = function (itemid) {
-        var deferred = $q.defer();
-        $http.get("https://jsonplaceholder.typicode.com/photos?id=" + itemid)
-             .success(function (response) {
-                     deferred.resolve(response);
              }, function (errorMessage) {
                  deferred.reject(errorMessage);
              });
@@ -793,6 +844,28 @@ services.factory('loginService', function ($q, $config, $auth, $http) {
                      deferred.reject('Unable to Login. Please try again.');
                  }
 
+             }, function (errorMessage) {
+                 deferred.reject(errorMessage);
+             });
+
+        return deferred.promise;
+    }
+    return returnObj;
+});
+controllers.controller('authoriseditemController', function ($scope, $authoriseditemService, $stateParams) {
+    $authoriseditemService.getItem($stateParams.itemId).then(function (response) {
+        $scope.item = response;
+    }, function (error) {
+        console.log(error);
+    });
+});
+services.factory('$authoriseditemService', function ($q, $config, $auth, $http) {
+    var returnObj = {};
+    returnObj.getItem = function (itemid) {
+        var deferred = $q.defer();
+        $http.get("https://jsonplaceholder.typicode.com/photos?id=" + itemid)
+             .success(function (response) {
+                     deferred.resolve(response);
              }, function (errorMessage) {
                  deferred.reject(errorMessage);
              });

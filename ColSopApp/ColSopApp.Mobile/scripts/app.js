@@ -4,7 +4,7 @@ var directives = angular.module('Co-App-Directives', []);
 
 var options = {
     baseURL: '',
-    debug: true, // true for app build
+    debug: false, // true for app build
     isApp: true,  //// true for app build
     db:null
 };
@@ -49,7 +49,7 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             }
             
         });
-    }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider) {
+    }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider, $httpProvider) {
         $stateProvider
             .state('unauthorised', {
                 url: '/app',
@@ -58,10 +58,10 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
                 templateUrl: 'views/unauthorised/menu/menu.html',
                 controller: 'unauthorisedController',
                 onEnter: function ($state, $auth) {
-                    //if ($auth.hasAccess()) {
-                    //    $state.go('authorised.itemlists');
+                    if ($auth.hasAccess()) {
+                        $state.go('authorised.itemlists');
 
-                    //}
+                    }
                 }
             }).state('unauthorised.home', {
                 url: '/home',
@@ -79,10 +79,10 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
                 templateUrl: 'views/authorised/menu/menu.html',
                 controller: 'authorisedController',
                 onEnter: function ($state, $auth) {
-                    //if (!$auth.hasAccess()) {
-                    //    $state.go('unauthorised.home');
+                    if (!$auth.hasAccess()) {
+                        $state.go('unauthorised.home');
 
-                    //}
+                    }
                 }
             }).state('authorised.itemlists', {
                 url: '/itemlists',
@@ -150,4 +150,6 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
         //Remove back button from all headers
         $ionicConfigProvider.platform.ios.navBar.alignTitle('left');
         $ionicConfigProvider.backButton.text('').icon('ion-chevron-left').previousTitleText(false);
+        
+        $httpProvider.interceptors.push('authInterceptorService');
     });

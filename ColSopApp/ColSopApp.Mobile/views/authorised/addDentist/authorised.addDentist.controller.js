@@ -2,14 +2,49 @@
  * 
  * 
  */
-controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup) {
+controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup, $authorisedDentistProfileService) {
 
+    $scope.dentistData = {};
+    //$scope.dentistData.FirstName = "Abdul";
+    //$scope.dentistData.LastName = "";
+    //$scope.dentistData.Email = "";
+    //$scope.dentistData.Telephone = "";
+    //$scope.dentistData.MobilePhone = "";
+    //$scope.dentistData.AddressLineOne = "";
+    //$scope.dentistData.AddressLineTwo = "";
+    //$scope.dentistData.AddressLineThree = "";
+    //$scope.dentistData.Pincode = "";
+    //$scope.dentistData.Comments = "";
+    //$scope.dentistData.Latitude = "";
+    //$scope.dentistData.Longtitude = "";
+    //$scope.dentistData.ImagePath = "";
+    //$scope.dentistData.ApplicationUserId = 0;
+    $scope.saveDentist = function () {
+        var dentistProfileDto = {};
+        dentistProfileDto.FirstName = $scope.dentistData.FirstName;
+        dentistProfileDto.LastName = $scope.dentistData.LastName;
+        dentistProfileDto.Email = $scope.dentistData.Email;
+        dentistProfileDto.Telephone = $scope.dentistData.Telephone;
+        dentistProfileDto.MobilePhone = $scope.dentistData.MobilePhone;
+        dentistProfileDto.AddressLineOne = $scope.dentistData.AddressLineOne;
+        dentistProfileDto.AddressLineTwo = $scope.dentistData.AddressLineTwo;
+        dentistProfileDto.AddressLineThree = $scope.dentistData.AddressLineThree;
+        dentistProfileDto.Pincode = $scope.dentistData.Pincode;
+        dentistProfileDto.Comments = $scope.dentistData.Comments;
+        dentistProfileDto.Latitude = $scope.dentistData.Latitude;
+        dentistProfileDto.Longtitude = $scope.dentistData.Longtitude;
+        dentistProfileDto.ImagePath = $scope.dentistData.ImagePath;
+        dentistProfileDto.ApplicationUserId = 0;
 
-    $scope.saveDentist = function() {
-        $ionicPopup.alert({
-            title: 'Success!',
-            template: 'Saved successfully'
+        $authorisedDentistProfileService.addDentist(dentistProfileDto).then(function (response) {
+            $ionicPopup.alert({
+                title: 'Success!',
+                template: 'Saved successfully'
+            });
+        }, function (error) {
+            console.log(error);
         });
+        
     };
     
     var mapoptions = { timeout: 10000, enableHighAccuracy: true };

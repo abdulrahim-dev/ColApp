@@ -218,3 +218,24 @@ services.service('$auth', ['$storage', '$q', '$config',
     }
 ]);
 
+services.factory('authInterceptorService', ['$q', '$injector', '$auth', function ($q, $injector, $auth) {
+
+    var authInterceptorServiceFactory = {};
+
+    var _request = function (config) {
+        
+        config.headers = config.headers || {};
+
+        var authData = $auth.get();;
+        if (authData) {
+            config.headers.Authorization = 'Bearer ' + authData.access_token;
+        }
+
+        return config;
+    }
+
+    
+    authInterceptorServiceFactory.request = _request;
+
+    return authInterceptorServiceFactory;
+}]);

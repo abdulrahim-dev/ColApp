@@ -9,7 +9,7 @@
     <ion-content class="add-dentist">
         <div class="list">
             <div>
-                <img src="https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg" ng-src="{{profilePicture}}" class="profile-pic" ng-click="showImages($index)">
+                <img src="https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg" ng-src="{{ImagePath}}" class="profile-pic" ng-click="showImages($index)">
             </div>
             <div>
                 <div class="button-bar">
@@ -19,41 +19,45 @@
             </div>
             <label class="item item-input item-floating-label">
                 <span class="input-label">First Name</span>
-                <input type="text" placeholder="First Name">
+                <input type="text" placeholder="First Name" ng-model="dentistData.FirstName">
             </label>
 
             <label class="item item-input item-floating-label">
                 <span class="input-label">Last Name</span>
-                <input type="text" placeholder="Last Name">
+                <input type="text" placeholder="Last Name" ng-model="dentistData.LastName">
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Email</span>
-                <input type="email" placeholder="Email">
+                <input type="email" placeholder="Email" ng-model="dentistData.Email">
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Phone Number</span>
-                <input type="text" placeholder="Phone Number">
+                <input type="text" placeholder="Phone Number" ng-model="dentistData.Telephone">
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Mobile Phone Number</span>
+                <input type="text" placeholder="Phone Number" ng-model="dentistData.MobilePhone">
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Address Line 1</span>
-                <input type="text" placeholder="Address Line 1">
+                <input type="text" placeholder="Address Line 1" ng-model="dentistData.AddressLineOne">
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Address Line 2</span>
-                <input type="text" placeholder="Address Line 2">
+                <input type="text" placeholder="Address Line 2" ng-model="dentistData.AddressLineTwo">
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Address Line 3</span>
-                <input type="text" placeholder="Address Line 3">
+                <input type="text" placeholder="Address Line 3" ng-model="dentistData.AddressLineThree">
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Pin Code</span>
-                <input type="text" placeholder="Pin Code">
+                <input type="text" placeholder="Pin Code" ng-model="dentistData.Pincode">
             </label>
 
             <label class="item item-input item-floating-label">
                 <span class="input-label">Comments</span>
-                <textarea placeholder="Comments" style="height: 123px;"></textarea>
+                <textarea placeholder="Comments" style="height: 123px;" ng-model="dentistData.Comments"></textarea>
             </label>
 
             <ion-item class="item-divider item">Location</ion-item>
