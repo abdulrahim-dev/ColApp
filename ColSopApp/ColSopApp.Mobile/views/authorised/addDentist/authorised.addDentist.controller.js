@@ -2,9 +2,16 @@
  * 
  * 
  */
-controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal) {
+controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup) {
 
-    console.log('add dentist controller loaded');
+
+    $scope.saveDentist = function() {
+        $ionicPopup.alert({
+            title: 'Success!',
+            template: 'Saved successfully'
+        });
+    };
+    
     var mapoptions = { timeout: 10000, enableHighAccuracy: true };
     $scope.profilePicture = "https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg";
     $scope.imagecaptured = 0;

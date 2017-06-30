@@ -4,14 +4,16 @@ var directives = angular.module('Co-App-Directives', []);
 
 var options = {
     baseURL: '',
-    debug: false,
-    isApp: false
+    debug: true, // true for app build
+    isApp: true,  //// true for app build
+    db:null
 };
 
 
 
 angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Services', 'Co-App-Directives'])
-    .run(function ($ionicPlatform, $rootScope) {
+    .run(function ($ionicPlatform, $rootScope, $cordovaSQLite) {
+        
         /* Route Helpers when a Route is changed */
         $rootScope.$on("$stateChangeSuccess", function (event, current, previous) {
             
@@ -31,6 +33,21 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             //    //StatusBar.hide();
             //    StatusBar.backgroundColorByHexString("#ed1de3");
             //}
+           
+            // Give database creation code in device ready event. Otherwise it will throw error
+
+           
+            if (options.isApp) {
+                if (cordova.platformId === 'android') {
+                    // Works on android but not in iOS
+                    options.db = $cordovaSQLite.openDB({ name: "ColAppDB.db", iosDatabaseLocation: 'default' });
+                } else {
+                    // Works on iOS 
+                    options.db = window.sqlitePlugin.openDatabase({ name: "ColAppDB.db", location: 2, createFromLocation: 1 });
+                }
+                $cordovaSQLite.execute(options.db, "CREATE TABLE IF NOT EXISTS datas (key text,data text)");
+            }
+            
         });
     }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider) {
         $stateProvider

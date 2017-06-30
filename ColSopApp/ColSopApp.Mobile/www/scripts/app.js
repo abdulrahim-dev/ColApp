@@ -4,14 +4,16 @@ var directives = angular.module('Co-App-Directives', []);
 
 var options = {
     baseURL: '',
-    debug: false,
-    isApp: false
+    debug: true, // true for app build
+    isApp: true,  //// true for app build
+    db:null
 };
 
 
 
 angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Services', 'Co-App-Directives'])
-    .run(function ($ionicPlatform, $rootScope) {
+    .run(function ($ionicPlatform, $rootScope, $cordovaSQLite) {
+        
         /* Route Helpers when a Route is changed */
         $rootScope.$on("$stateChangeSuccess", function (event, current, previous) {
             
@@ -31,6 +33,21 @@ angular.module('Co_APP', ['ionic', 'ngCordova', 'Co-App-Controllers', 'Co-App-Se
             //    //StatusBar.hide();
             //    StatusBar.backgroundColorByHexString("#ed1de3");
             //}
+           
+            // Give database creation code in device ready event. Otherwise it will throw error
+
+           
+            if (options.isApp) {
+                if (cordova.platformId === 'android') {
+                    // Works on android but not in iOS
+                    options.db = $cordovaSQLite.openDB({ name: "ColAppDB.db", iosDatabaseLocation: 'default' });
+                } else {
+                    // Works on iOS 
+                    options.db = window.sqlitePlugin.openDatabase({ name: "ColAppDB.db", location: 2, createFromLocation: 1 });
+                }
+                $cordovaSQLite.execute(options.db, "CREATE TABLE IF NOT EXISTS datas (key text,data text)");
+            }
+            
         });
     }).config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider, $ionicConfigProvider) {
         $stateProvider
@@ -359,9 +376,16 @@ services.service('$auth', ['$storage', '$q', '$config',
  * 
  * 
  */
-controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal) {
+controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup) {
 
-    console.log('add dentist controller loaded');
+
+    $scope.saveDentist = function() {
+        $ionicPopup.alert({
+            title: 'Success!',
+            template: 'Saved successfully'
+        });
+    };
+    
     var mapoptions = { timeout: 10000, enableHighAccuracy: true };
     $scope.profilePicture = "https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg";
     $scope.imagecaptured = 0;
@@ -494,6 +518,83 @@ controllers.controller('authorisedCameraController', function ($scope, $cordovaG
     
 });
 
+controllers.controller('authorisedDentistsController', function ($scope, $authorisedDentistService, $cordovaSQLite, $cordovaNetwork) {
+    $scope.$on('$ionicView.enter', function () {
+
+        if (!options.isApp||$cordovaNetwork.isOnline()) {
+
+            $authorisedDentistService.getList().then(function(response) {
+
+                $scope.users = response;
+
+                $scope.users[0].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBepnW9wIbQ_1FQyTNnofILX2v9KTTm6iYXNs6aj2O0eggrXHY";
+                $scope.users[1].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQueP_WHk-UaaDNEZN0tXU8zlVTvMd2RSfLjxMJNI8x_m9kCsafew";
+                $scope.users[2].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsV2ldn-Sg2vbYrpkz4IY5SMHhU2U7QJA3oZcU1kBHHv6iw1kF";
+                $scope.users[3].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAMnwyeU3b78nw5I4zPt3tdggtiRSEIikft3hDGg6JYVrNjhWf";
+                $scope.users[4].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqW-3ofnRb9lb24Giy0npjncAEO2MTMtNkCT-eimKG3Rz3uLQa";
+
+                $scope.users[9].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz1pwhz99rKXxyiwqRegC7b3tUatP0aCy4gtjimd3jbWQnXu1V";
+                $scope.users[7].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1FvmCVAZTMMuyQ97z37jNmRhRO21rJuqO2bB_rhPw_CEr0p_XTQ";
+                $scope.users[6].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0lIEbR4XTfktZPyeTP0W2mv25FXlZY15ChH9GyNM9UvzUCRrm";
+                $scope.users[5].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgEJtPOiQdDtPtlWEPjcJr3ZPKsGWw_mi7xNkSf4z0ezovzqQ9kQ";
+                $scope.users[8].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThMTYUt_nB2FrK0MAOzCUZ1zPp_tDBt3cwZPcOVOXGcYYiQwbi";
+
+                /**
+              * ***********sample for pull to refresh functionality
+              */
+                $scope.pullToRefresh = [];
+                $scope.pullToRefresh.push(response[9]);
+                $scope.pullToRefresh.push(response[8]);
+                $scope.pullToRefresh.push(response[7]);
+                $scope.users.splice(9, 1);
+                $scope.users.splice(8, 1);
+                $scope.users.splice(7, 1);
+                
+                var query = "INSERT INTO datas (key,data) VALUES (?,?)";
+                $cordovaSQLite.execute(options.db, query, ['dentistsList',$scope.users]).then(function (res) {
+                    console.log("INSERT ID -> " + res.insertId);
+                }, function (err) {
+                    console.error(err);
+                });
+
+            }, function(error) {
+                console.log(error);
+            });
+        } else {
+            var query = "SELECT data FROM datas where key='dentistsList'";
+            console.log("Internet is not available");
+            $cordovaSQLite.execute(options.db, query).then(function (res) {
+                $scope.users = res;
+            }, function (err) {
+                console.error(err);
+            });
+        }
+    });
+
+    /**
+      * pull to refresh method
+      * @returns {} list of users 
+      */
+    $scope.getNewData = function () {
+        $scope.users = $scope.pullToRefresh.concat($scope.users);
+        $scope.$broadcast("scroll.refreshComplete");
+    }
+});
+services.factory('$authorisedDentistService', function ($q, $config, $auth, $http) {
+    var returnObj = {};
+    returnObj.getList = function () {
+        var deferred = $q.defer();
+        $http.get("https://jsonplaceholder.typicode.com/users")
+             .success(function (response) {
+                 deferred.resolve(response);
+             }, function (errorMessage) {
+                 deferred.reject(errorMessage);
+             });
+
+        return deferred.promise;
+    }
+    return returnObj;
+});
 controllers.controller('authorisedDentistDetailsController', function ($scope, $authorisedDentistDetailsService, $stateParams) {
     $authorisedDentistDetailsService.getItem($stateParams.dentistId).then(function (response) {
         $scope.user = response;
@@ -524,63 +625,6 @@ services.factory('$authorisedDentistDetailsService', function ($q, $config, $aut
         $http.get("https://jsonplaceholder.typicode.com/users?id=" + userid)
              .success(function (response) {
                      deferred.resolve(response);
-             }, function (errorMessage) {
-                 deferred.reject(errorMessage);
-             });
-
-        return deferred.promise;
-    }
-    return returnObj;
-});
-controllers.controller('authorisedDentistsController', function ($scope, $authorisedDentistService) {
-    $scope.$on('$ionicView.enter', function() {
-        $authorisedDentistService.getList().then(function(response) {
-            $scope.users = response;
-
-            $scope.users[0].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBepnW9wIbQ_1FQyTNnofILX2v9KTTm6iYXNs6aj2O0eggrXHY";
-            $scope.users[1].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQueP_WHk-UaaDNEZN0tXU8zlVTvMd2RSfLjxMJNI8x_m9kCsafew";
-            $scope.users[2].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsV2ldn-Sg2vbYrpkz4IY5SMHhU2U7QJA3oZcU1kBHHv6iw1kF";
-            $scope.users[3].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAMnwyeU3b78nw5I4zPt3tdggtiRSEIikft3hDGg6JYVrNjhWf";
-            $scope.users[4].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqW-3ofnRb9lb24Giy0npjncAEO2MTMtNkCT-eimKG3Rz3uLQa";
-
-            $scope.users[9].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz1pwhz99rKXxyiwqRegC7b3tUatP0aCy4gtjimd3jbWQnXu1V";
-            $scope.users[7].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1FvmCVAZTMMuyQ97z37jNmRhRO21rJuqO2bB_rhPw_CEr0p_XTQ";
-            $scope.users[6].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0lIEbR4XTfktZPyeTP0W2mv25FXlZY15ChH9GyNM9UvzUCRrm";
-            $scope.users[5].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgEJtPOiQdDtPtlWEPjcJr3ZPKsGWw_mi7xNkSf4z0ezovzqQ9kQ";
-            $scope.users[8].profilePhoto = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThMTYUt_nB2FrK0MAOzCUZ1zPp_tDBt3cwZPcOVOXGcYYiQwbi";
-
-            /**
-              * ***********sample for pull to refresh functionality
-              */
-            $scope.pullToRefresh = [];
-            $scope.pullToRefresh.push(response[9]);
-            $scope.pullToRefresh.push(response[8]);
-            $scope.pullToRefresh.push(response[7]);
-            $scope.users.splice(9, 1);
-            $scope.users.splice(8, 1);
-            $scope.users.splice(7, 1);
-
-        }, function(error) {
-            console.log(error);
-        });
-    });
-
-    /**
-      * pull to refresh method
-      * @returns {} list of users 
-      */
-    $scope.getNewData = function () {
-        $scope.users = $scope.pullToRefresh.concat($scope.users);
-        $scope.$broadcast("scroll.refreshComplete");
-    }
-});
-services.factory('$authorisedDentistService', function ($q, $config, $auth, $http) {
-    var returnObj = {};
-    returnObj.getList = function () {
-        var deferred = $q.defer();
-        $http.get("https://jsonplaceholder.typicode.com/users")
-             .success(function (response) {
-                 deferred.resolve(response);
              }, function (errorMessage) {
                  deferred.reject(errorMessage);
              });
