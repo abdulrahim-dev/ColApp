@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ColSopApp.Core.Entities;
 using ColSopApp.Core.Entities.Foundation;
 using ColSopApp.Core.Logging;
+using ColSopApp.Data.Configurations;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ColSopApp.Data
@@ -50,6 +51,7 @@ namespace ColSopApp.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Configurations.Add(new DentistProfileConfiguration());
         }
 
         public static ColAppDbContext Create()
