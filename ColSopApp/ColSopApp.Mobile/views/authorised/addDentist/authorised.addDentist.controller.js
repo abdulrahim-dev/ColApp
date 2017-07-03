@@ -5,20 +5,20 @@
 controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup, $authorisedDentistProfileService) {
 
     $scope.dentistData = {};
-    //$scope.dentistData.FirstName = "Abdul";
-    //$scope.dentistData.LastName = "";
-    //$scope.dentistData.Email = "";
-    //$scope.dentistData.Telephone = "";
-    //$scope.dentistData.MobilePhone = "";
-    //$scope.dentistData.AddressLineOne = "";
-    //$scope.dentistData.AddressLineTwo = "";
-    //$scope.dentistData.AddressLineThree = "";
-    //$scope.dentistData.Pincode = "";
-    //$scope.dentistData.Comments = "";
-    //$scope.dentistData.Latitude = "";
-    //$scope.dentistData.Longtitude = "";
-    //$scope.dentistData.ImagePath = "";
-    //$scope.dentistData.ApplicationUserId = 0;
+    $scope.dentistData.FirstName ="FirstName";
+    $scope.dentistData.LastName ="LastName";
+    $scope.dentistData.Email ="Email";
+    $scope.dentistData.Telephone ="Telephone";
+    $scope.dentistData.MobilePhone ="MobilePhone";
+    $scope.dentistData.AddressLineOne ="AddressLineOne";
+    $scope.dentistData.AddressLineTwo ="AddressLineTwo";
+    $scope.dentistData.AddressLineThree ="AddressLineThree";
+    $scope.dentistData.Pincode ="Pincode";
+    $scope.dentistData.Comments ="Comments";
+    $scope.dentistData.Latitude =0;
+    $scope.dentistData.Longtitude =0;
+    $scope.dentistData.ImagePath = "";
+
     $scope.saveDentist = function () {
         var dentistProfileDto = {};
         dentistProfileDto.FirstName = $scope.dentistData.FirstName;
@@ -34,7 +34,7 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
         dentistProfileDto.Latitude = $scope.dentistData.Latitude;
         dentistProfileDto.Longtitude = $scope.dentistData.Longtitude;
         dentistProfileDto.ImagePath = $scope.dentistData.ImagePath;
-        dentistProfileDto.ApplicationUserId = 0;
+        dentistProfileDto.ApplicationUserId = "";
 
         $authorisedDentistProfileService.addDentist(dentistProfileDto).then(function (response) {
             $ionicPopup.alert({
@@ -47,8 +47,9 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
         
     };
     
-    var mapoptions = { timeout: 10000, enableHighAccuracy: true };
-    $scope.profilePicture = "https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg";
+   
+    /*Code for image capture / choose image from gallery*/
+    $scope.ProfilePic = "https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg";
     $scope.imagecaptured = 0;
     $scope.takePhoto_Camera = function () {
         var options = {
@@ -59,7 +60,8 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
 
         // udpate camera image directive
         $cordovaCamera.getPicture(options).then(function (imageData) {
-            $scope.profilePicture = "data:image/jpeg;base64," + imageData;
+            $scope.dentistData.ImagePath = imageData;
+            $scope.ProfilePic = "data:image/jpeg;base64," + imageData;
             $scope.imagecaptured = 1;
             $scope.$apply();
         }, function (err) {
@@ -82,7 +84,7 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
 
         // udpate camera image directive
         $cordovaCamera.getPicture(options).then(function (imageData) {
-            $scope.profilePicture = imageData;
+            $scope.dentistData.ImagePath = imageData;
             $scope.imagecaptured = 2;// for 
             $scope.$apply();
         }, function (err) {
@@ -95,10 +97,12 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
     /**
       * ************* Get Current Location
       */
-
+    var mapoptions = { timeout: 10000, enableHighAccuracy: true };
     $cordovaGeolocation.getCurrentPosition(mapoptions).then(function (position) {
 
         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        $scope.dentistData.Latitude = position.coords.latitude;
+        $scope.dentistData.Longtitude = position.coords.longitude;
 
         var mapOptions = {
             center: latLng,
@@ -131,7 +135,9 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
 
         //***********get lat and longt on scroll moving
         google.maps.event.addListener(marker, 'drag', function (event) {
-            console.log("langtitude : "+event.latLng.lat()+" , longtitude : " +event.latLng.lng());
+            console.log("langtitude : " + event.latLng.lat() + " , longtitude : " + event.latLng.lng());
+            $scope.dentistData.Latitude = event.latLng.lat();
+            $scope.dentistData.Longtitude = event.latLng.lng();
         });
 
     }, function (error) {

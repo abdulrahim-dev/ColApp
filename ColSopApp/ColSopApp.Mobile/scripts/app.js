@@ -4,7 +4,7 @@ var directives = angular.module('Co-App-Directives', []);
 
 var options = {
     baseURL: '',
-    debug: false, // true for app build
+    debug: true, // true for app build
     isApp: true,  //// true for app build
     db:null
 };
