@@ -3,21 +3,26 @@
  * 
  */
 controllers.controller('authorisedAddDentistController', function ($scope, $cordovaGeolocation, $cordovaCamera, $ionicModal, $ionicPopup, $authorisedDentistProfileService) {
+    $scope.$on('$ionicView.enter', function () {
+        $scope.dentistData = {};
+        $scope.dentistData.FirstName = "FirstName";
+        $scope.dentistData.LastName = "LastName";
+        $scope.dentistData.Email = "Email";
+        $scope.dentistData.Telephone = "Telephone";
+        $scope.dentistData.MobilePhone = "MobilePhone";
+        $scope.dentistData.AddressLineOne = "AddressLineOne";
+        $scope.dentistData.AddressLineTwo = "AddressLineTwo";
+        $scope.dentistData.AddressLineThree = "AddressLineThree";
+        $scope.dentistData.Pincode = "Pincode";
+        $scope.dentistData.Comments = "Comments";
+        $scope.dentistData.ImagePath = "";
 
-    $scope.dentistData = {};
-    $scope.dentistData.FirstName ="FirstName";
-    $scope.dentistData.LastName ="LastName";
-    $scope.dentistData.Email ="Email";
-    $scope.dentistData.Telephone ="Telephone";
-    $scope.dentistData.MobilePhone ="MobilePhone";
-    $scope.dentistData.AddressLineOne ="AddressLineOne";
-    $scope.dentistData.AddressLineTwo ="AddressLineTwo";
-    $scope.dentistData.AddressLineThree ="AddressLineThree";
-    $scope.dentistData.Pincode ="Pincode";
-    $scope.dentistData.Comments ="Comments";
-    $scope.dentistData.Latitude =0;
-    $scope.dentistData.Longtitude =0;
-    $scope.dentistData.ImagePath = "";
+        $scope.ProfilePic = "https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg";
+        $scope.imagecaptured = 0;
+
+        $scope.slideImages = [];
+    });
+   
 
     $scope.saveDentist = function () {
         var dentistProfileDto = {};
@@ -37,6 +42,8 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
         dentistProfileDto.ApplicationUserId = "";
 
         $authorisedDentistProfileService.addDentist(dentistProfileDto).then(function (response) {
+            $scope.dentistData = {};
+            $scope.ProfilePic = "https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg";
             $ionicPopup.alert({
                 title: 'Success!',
                 template: 'Saved successfully'
@@ -49,8 +56,7 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
     
    
     /*Code for image capture / choose image from gallery*/
-    $scope.ProfilePic = "https://s3.amazonaws.com/ionic-io-static/5tUcTrHcTUKRORUQd15Q_profile_picture_default.jpg";
-    $scope.imagecaptured = 0;
+  
     $scope.takePhoto_Camera = function () {
         var options = {
             quality: 50,
@@ -69,7 +75,7 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
             console.log(err);
         });
     };
-    $scope.slideImages = [];
+   
     $scope.selectPhoto_Gallery = function () {
         var options = {
             sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
@@ -85,6 +91,7 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
         // udpate camera image directive
         $cordovaCamera.getPicture(options).then(function (imageData) {
             $scope.dentistData.ImagePath = imageData;
+            $scope.ProfilePic = imageData;
             $scope.imagecaptured = 2;// for 
             $scope.$apply();
         }, function (err) {
@@ -99,7 +106,6 @@ controllers.controller('authorisedAddDentistController', function ($scope, $cord
       */
     var mapoptions = { timeout: 10000, enableHighAccuracy: true };
     $cordovaGeolocation.getCurrentPosition(mapoptions).then(function (position) {
-
         var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         $scope.dentistData.Latitude = position.coords.latitude;
         $scope.dentistData.Longtitude = position.coords.longitude;
